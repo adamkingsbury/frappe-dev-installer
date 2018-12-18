@@ -1,0 +1,94 @@
+#Update apt-get
+sudo apt-get update
+
+#install the basics
+sudo apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common \
+    git
+
+#Setup docker repository
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+#Install docker-compose completion
+sudo curl -L https://raw.githubusercontent.com/docker/compose/1.23.2/contrib/completion/bash/docker-compose -o /etc/bash_completion.d/docker-compose
+
+#Install chrome repository
+wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
+
+
+#Install Atom repository
+curl -sL https://packagecloud.io/AtomEditor/atom/gpgkey | sudo apt-key add -
+sudo sh -c 'echo "deb [arch=amd64] https://packagecloud.io/AtomEditor/atom/any/ any main" > /etc/apt/sources.list.d/atom.list'
+
+#Install all new apt-get apps
+sudo apt-get update
+sudo apt-get install -y docker-ce \
+                        google-chrome-stable \
+                        atom
+
+# https://docs.docker.com/compose/install/
+sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+# https://docs.docker.com/install/linux/linux-postinstall/
+sudo groupadd docker
+sudo usermod -aG docker $USER
+
+#Install frappe_docker environment
+cd ~
+mkdir dev
+cd dev
+git clone https://github.com/frappe/frappe_docker.git
+cd frappe_docker
+sudo docker-compose up -d
+sudo ./dbench init
+sudo ./dbench get-app erpnext
+sudo ./dbench new-site erpnext.local
+sudo ./dbench new-site dev.local
+sudo ./dbench --site erpnext.local install-app erpnext
+
+#Install and deploy any of your own development apps here
+#sudo ./dbench get-app {YOUR_GITHUB_REPOSITORY}
+#sudo ./dbench --site dev.local {YOUR_APP_NAME}
+
+#set erpnext.local to developer_mode (by adding developer mode to site config file)
+cp frappe-bench/sites/erpnext.local/site_config.json frappe-bench/sites/erpnext.local/site_config.json.backup
+echo $(grep -v } frappe-bench/sites/erpnext.local/site_config.json), \"developer_mode\": 1 } > frappe-bench/sites/erpnext.local/site_config.json
+
+#set dev.local to developer_mode (by adding developer mode to site config file)
+cp frappe-bench/sites/dev.local/site_config.json frappe-bench/sites/dev.local/site_config.json.backup
+echo $(grep -v } frappe-bench/sites/dev.local/site_config.json), \"developer_mode\": 1 } > frappe-bench/sites/dev.local/site_config.json
+
+cat > ~/quickstart << EOL
+cd ~/frappe_docker
+docker-compose start
+./dbench setup hosts
+./dbench start
+EOL
+
+sudo chmod +x ~/quickstart
+
+cat > ~/stopdev << EOL
+cd ~/frappe_docker
+docker-compose stop
+EOL
+
+sudo chmod +x ~/stopdev
+
+echo
+echo
+echo ===========================================================================
+echo Setup complete - restart linux to ensure that your account has full
+echo access to the installed applications
+echo ===========================================================================
+echo
+echo To quickstart deveolpment, launch a console window in your home folder
+echo and call "quickstart"
+echo
+echo To gracefully shutdown development:
+echo 1) Press ctrl-c if the development server is still running
+echo 2) call "stopdev" to stop the docker servers
