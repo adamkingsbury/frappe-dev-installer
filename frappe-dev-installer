@@ -45,8 +45,9 @@ cd dev
 git clone https://github.com/frappe/frappe_docker.git
 cd frappe_docker
 sudo docker-compose up -d
-sudo ./dbench init
-sudo ./dbench get-app erpnext
+sudo ./dbench --frappe-branch master init
+sudo ./dbench get-app --branch master erpnext
+sudo ./dbench config dns_multitenant on
 sudo ./dbench new-site erpnext.local
 sudo ./dbench new-site dev.local
 sudo ./dbench --site erpnext.local install-app erpnext
