@@ -65,7 +65,7 @@ cp frappe-bench/sites/dev.local/site_config.json frappe-bench/sites/dev.local/si
 echo $(grep -v } frappe-bench/sites/dev.local/site_config.json), \"developer_mode\": 1 } > frappe-bench/sites/dev.local/site_config.json
 
 cat > ~/quickstart << EOL
-cd ~/frappe_docker
+cd ~/dev/frappe_docker
 docker-compose start
 ./dbench setup hosts
 ./dbench start
@@ -74,7 +74,7 @@ EOL
 sudo chmod +x ~/quickstart
 
 cat > ~/stopdev << EOL
-cd ~/frappe_docker
+cd ~/dev/frappe_docker
 docker-compose stop
 EOL
 
@@ -88,8 +88,8 @@ echo access to the installed applications
 echo ===========================================================================
 echo
 echo To quickstart deveolpment, launch a console window in your home folder
-echo and call "quickstart"
+echo and call quickstart
 echo
 echo To gracefully shutdown development:
-echo 1) Press ctrl-c if the development server is still running
-echo 2) call "stopdev" to stop the docker servers
+echo 1. Press ctrl-c if the development server is still running
+echo 2. call "stopdev" to stop the docker servers
