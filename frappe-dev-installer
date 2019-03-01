@@ -51,6 +51,7 @@ sudo ./dbench config dns_multitenant on
 sudo ./dbench new-site erpnext.local
 sudo ./dbench new-site dev.local
 sudo ./dbench --site erpnext.local install-app erpnext
+sudo ./dbench setup manager
 
 #Install and deploy any of your own development apps here
 #sudo ./dbench get-app {YOUR_GITHUB_REPOSITORY}
