@@ -23,7 +23,7 @@ sudo -u frappe bench setup manager --yes
 sudo -u frappe bench new-app <your-new-app> 
 sudo -u frappe bench new-site --mariadb-root-password <your-sql-password> --admin-password <your-admin-password> —-install-app <your-new-app> dev.local
 sudo -u frappe bench setup nginx
-sudo service nginx reload
+sudo systemctl restart nginx
 
 
 #################################################################################################################################
