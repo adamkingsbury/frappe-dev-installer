@@ -10,37 +10,29 @@ wget https://raw.githubusercontent.com/frappe/bench/master/playbooks/install.py
 ### If the following command fails, try logging out of the current user session. Then log back into the server and re-run
 ### You might have to repeat a couple of times to get all the way through the install
 #################################################################################################################################
-exec su -l $USER
-sudo python install.py --production --user frappe --site erpnext.local --bench-branch master --bench-branch master --mysql-root-password <your-sql-password> --admin-password <your-admin-password> --bench-name frappe-bench
-exec su -l $USER
-sudo python install.py --production --user frappe --site erpnext.local --bench-branch master --bench-branch master --mysql-root-password <your-sql-password> --admin-password <your-admin-password> --bench-name frappe-bench
-exec su -l $USER
-sudo python install.py --production --user frappe --site erpnext.local --bench-branch master --bench-branch master --mysql-root-password <your-sql-password> --admin-password <your-admin-password> --bench-name frappe-bench
+
+sudo python install.py --production --site erpnext.local --bench-branch master --bench-branch master --mysql-root-password <your-sql-password> --admin-password <your-admin-password> --bench-name frappe-bench
 
 
 #################################################################################################################################
 ### The Final Clean up.create a dev environment setup multisite dns 
 #################################################################################################################################
 cd /home/frappe/frappe-bench/
-sudo -u frappe bench config dns_multitenant on
-sudo -u frappe bench setup manager --yes
-sudo -u frappe bench new-app <your-new-app> 
-sudo -u frappe bench new-site --mariadb-root-password <your-sql-password> --admin-password <your-admin-password> —-install-app <your-new-app> dev.local
-sudo -u frappe bench setup nginx
+sudo bench config dns_multitenant on
+sudo bench setup manager --yes
+sudo bench new-app <your-new-app> 
+sudo bench new-site --mariadb-root-password <your-sql-password> --admin-password <your-admin-password> —-install-app <your-new-app> dev.local
+sudo bench setup nginx
 sudo systemctl restart nginx
 
 
 #################################################################################################################################
 ### EDIT YOUR /etc/hosts file to reference all of the site URLS you have created!!!
-### 
-### Add something like this:
-### 
-### 127.0.0.1       localhost
-### 127.0.1.1       ubuntu
-### 127.0.1.1       dev.local
-### 127.0.1.1       erpnext.local
-### 127.0.1.1       bench-manager.local
-### 
-### 
 #################################################################################################################################
-sudo nano /etc/hosts
+echo '127.0.1.1       dev.local' | sudo tee -a /etc/hosts
+echo '127.0.1.1       erpnext.local' | sudo tee -a /etc/hosts
+echo '127.0.1.1       bench-manager.local' | sudo tee -a /etc/hosts
+sudo service nginx stop
+sudo service supervisor stop
+sudo service supervisor start
+sudo service nginx start
