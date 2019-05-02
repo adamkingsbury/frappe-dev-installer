@@ -17,12 +17,12 @@ sudo python install.py --production --site erpnext.local --bench-branch master -
 #################################################################################################################################
 ### The Final Clean up.create a dev environment setup multisite dns 
 #################################################################################################################################
-cd /home/frappe/frappe-bench/
-sudo bench config dns_multitenant on
-sudo bench setup manager --yes
-sudo bench new-app <your-new-app> 
-sudo bench new-site --mariadb-root-password <your-sql-password> --admin-password <your-admin-password> —-install-app <your-new-app> dev.local
-sudo bench setup nginx
+cd frappe-bench
+bench config dns_multitenant on
+bench setup manager --yes
+bench new-app <your-new-app> 
+bench new-site --mariadb-root-password <your-sql-password> --admin-password <your-admin-password> —-install-app <your-new-app> dev.local
+bench setup nginx
 sudo systemctl restart nginx
 
 
