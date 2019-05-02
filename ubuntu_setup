@@ -10,7 +10,11 @@ wget https://raw.githubusercontent.com/frappe/bench/master/playbooks/install.py
 ### If the following command fails, try logging out of the current user session. Then log back into the server and re-run
 ### You might have to repeat a couple of times to get all the way through the install
 #################################################################################################################################
-
+exec su -l $USER
+sudo python install.py --production --user frappe --site erpnext.local --bench-branch master --bench-branch master --mysql-root-password <your-sql-password> --admin-password <your-admin-password> --bench-name frappe-bench
+exec su -l $USER
+sudo python install.py --production --user frappe --site erpnext.local --bench-branch master --bench-branch master --mysql-root-password <your-sql-password> --admin-password <your-admin-password> --bench-name frappe-bench
+exec su -l $USER
 sudo python install.py --production --user frappe --site erpnext.local --bench-branch master --bench-branch master --mysql-root-password <your-sql-password> --admin-password <your-admin-password> --bench-name frappe-bench
 
 
